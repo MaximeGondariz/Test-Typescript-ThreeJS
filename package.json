@@ -1,0 +1,22 @@
+{
+  "name": "test-typescript-threejs",
+  "version": "1.0.0",
+  "description": "---- Première Phase ----",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaximeGondariz/Test-Typescript-ThreeJS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MaximeGondariz/Test-Typescript-ThreeJS/issues"
+  },
+  "homepage": "https://github.com/MaximeGondariz/Test-Typescript-ThreeJS#readme",
+  "dependencies": {
+    "three": "^0.144.0"
+  }
+}
