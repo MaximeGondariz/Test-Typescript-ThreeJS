@@ -2,8 +2,9 @@
 
 ---- Première Phase ----
 
-- [ ] Créer un carré/rectangle
-- [ ] Le modéliser en 3d
+- [X] Créer un carré/rectangle
+- [X] Le modéliser en 3d
+- [ ] Comprendre le code
 
 ---- Deuxième Phase ----
 
