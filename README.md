@@ -4,7 +4,6 @@
 
 - [X] Créer un carré/rectangle
 - [X] Le modéliser en 3d
-- [ ] Comprendre le code
 
 ---- Deuxième Phase ----
 
