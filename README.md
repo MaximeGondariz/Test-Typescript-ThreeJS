@@ -13,4 +13,5 @@
 
 ---- Troisième Phase ----
 
+- [X] Apliquer des textures
 - [ ] Créer une animation avec le cube

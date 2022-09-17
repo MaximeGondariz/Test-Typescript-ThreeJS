@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 @Component({
@@ -30,6 +31,8 @@ export class DrawComponent implements OnInit {
     controls.target.set(0, 0, 0)
     controls.update();
 
+
+
     let yRotation =  0; 
     let xRotation =  0;	 
     let zRotation =  0;
@@ -42,12 +45,45 @@ export class DrawComponent implements OnInit {
     let xScale =  1;	 
     let zScale =  1;
 
-    const loader = new GLTFLoader();
+    const texture = new THREE.TextureLoader().load( 'assets/Texture/grey-block.png' );
 
-    loader.load( "assets/Item/Cube.gltf ", process );
-    let model = new THREE.Object3D( );
+    // immediately use the texture for material creation
+    const material = new THREE.MeshPhongMaterial( { map: texture } );
 
-    model.scale.set(1,1,1);
+    const light1 = new THREE.DirectionalLight(0xFFFFFFF, 1);
+    light1.position.set(0, 0, 4);
+    scene.add(light1);
+
+    const light2 = new THREE.DirectionalLight(0xFFFFFFF, 1);
+    light2.position.set(-4,0,0)
+    scene.add(light2);
+
+    const light3 = new THREE.DirectionalLight(0xFFFFFFF, 1);
+    light3.position.set(4,0,0)
+    scene.add(light3);
+
+    const light4 = new THREE.DirectionalLight(0xFFFFFFF, 1);
+    light4.position.set(0,0,-4)
+    scene.add(light4);
+
+    const light5 = new THREE.DirectionalLight(0xFFFFFFF, 1);
+    light5.position.set(0,-4,0)
+    scene.add(light5);
+
+    const light6 = new THREE.DirectionalLight(0xFFFFFFF, 1);
+    light6.position.set(0,4,0)
+    scene.add(light6);
+		
+
+    let geomentry = new THREE.BoxGeometry(20,20,20);
+    let cube = new THREE.Mesh(geomentry,material);
+    scene.add(cube);
+	
+    renderer.render( scene, camera );
+
+    animate();
+
+
 
     function animate( ) {
 	
@@ -57,18 +93,18 @@ export class DrawComponent implements OnInit {
 
       zRotation += 0.005;
 
-      model.position.x = xPosition;
-      //model.position.y = yPosition;
-      //model.position.z = zPosition;
+      cube.position.x = xPosition;
+      //cube.position.y = yPosition;
+      //cube.position.z = zPosition;
  	
-      //model.rotation.x = xRotation;
-	    //model.rotation.y = yRotation;
-	    model.rotation.z = -zRotation;
+      //cube.rotation.x = xRotation;
+	    //cube.rotation.y = yRotation;
+	    cube.rotation.z = -zRotation;
 
       xScale = xScale-0.001
       yScale = yScale-0.001
       zScale = zScale-0.001
-      model.scale.set(xScale,yScale,zScale)
+      cube.scale.set(xScale,yScale,zScale)
 
       if(xScale < 0){
         xPosition = 0
@@ -82,29 +118,13 @@ export class DrawComponent implements OnInit {
         xScale = 1
         yScale = 1
         zScale = 1
-        model.scale.set(xScale,yScale,zScale)
+        cube.scale.set(xScale,yScale,zScale)
       }
 
       controls.update();
 
       renderer.render( scene, camera );
 	
-    }
-
-    function process( gltf:any ) {	
-		
-      
-	    const box = new THREE.Box3( ).setFromObject( gltf.scene );	
-	    const boxHelper = new THREE.Box3Helper( box, new THREE.Color( 0x45ffff ) );
-      scene.add( boxHelper );
-
-	    model.add( gltf.scene );
-	
-	    scene.add( model );
-	
-      renderer.render( scene, camera );
-
-      animate();
     }
   }
 
