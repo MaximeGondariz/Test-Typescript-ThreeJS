@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 @Component({
   selector: 'app-draw',
@@ -14,41 +12,47 @@ export class DrawComponent implements OnInit {
   }
 
   public createDraw(){
+
+// --------------- Le rendue de la scene ---------------
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
-  
-    const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 500 );
-    camera.position.set( 50, 50, 50 );
-    camera.lookAt( 0, 0, 0 );
-  
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x005005 )
-    scene.add(new THREE.AxesHelper(5))
 
-    const controls = new OrbitControls(camera, renderer.domElement)
-    controls.enableDamping = true
-    controls.target.set(0, 0, 0)
+// --------------- La camera ---------------
+    const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 500 );
+    camera.position.set( 0, 0, 150 );
+    camera.lookAt( 0, 0, 0 );
+
+// --------------- La scène ---------------
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color( 0x005005 );
+    scene.add(new THREE.AxesHelper(5));
+
+// --------------- Les controles pour faire bouger la scène ---------------
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.target.set(0, 0, 0);
     controls.update();
 
+// --------------- La création du cube dans la scene ---------------
+
+    const cubeTexture = new THREE.TextureLoader().load( 'assets/Texture/grey-block.png' );
+    const cubeMaterial = new THREE.MeshPhongMaterial( { map: cubeTexture } );
+    let cubeGeomentry = new THREE.BoxGeometry(20,20,20);
+
+    let cube = new THREE.Mesh(cubeGeomentry,cubeMaterial);
+    cube.position.y = 10
+    scene.add(cube);
 
 
-    let yRotation =  0; 
-    let xRotation =  0;	 
-    let zRotation =  0;
+    const groundMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
+    let groundGeomentry = new THREE.BoxGeometry(200,3,30);
 
-    let yPosition =  0; 
-    let xPosition =  0;	 
-    let zPosition =  0;
+    let ground = new THREE.Mesh(groundGeomentry,groundMaterial);
+    ground.position.y = -2
+    scene.add(ground);
 
-    let yScale =  1; 
-    let xScale =  1;	 
-    let zScale =  1;
-
-    const texture = new THREE.TextureLoader().load( 'assets/Texture/grey-block.png' );
-
-    // immediately use the texture for material creation
-    const material = new THREE.MeshPhongMaterial( { map: texture } );
+// --------------- Les lumières ---------------
 
     const light1 = new THREE.DirectionalLight(0xFFFFFFF, 1);
     light1.position.set(0, 0, 4);
@@ -73,52 +77,71 @@ export class DrawComponent implements OnInit {
     const light6 = new THREE.DirectionalLight(0xFFFFFFF, 1);
     light6.position.set(0,4,0)
     scene.add(light6);
-		
 
-    let geomentry = new THREE.BoxGeometry(20,20,20);
-    let cube = new THREE.Mesh(geomentry,material);
-    scene.add(cube);
-	
+// --------------- Ajout de la scene et de la camera dans le rendue ---------------
+
     renderer.render( scene, camera );
 
+// --------------- Création de plusieurs variables qui permettront de modifier la position, la rotation et la taille du cube ---------------
+
+    let xPosition =  0;	
+    let yPosition =  10;  
+    let zPosition =  0;
+
+    let xRotation =  0;	 
+    let yRotation =  0; 
+    let zRotation =  0;
+
+    let xScale =  1;	
+    let yScale =  1;  
+    let zScale =  1;
+
+// --------------- Activation de la fonction qui va animer le cube ---------------
+    let marchSpeed = 0.040
+    let marchRotation = 0.008
     animate();
-
-
 
     function animate( ) {
 	
+// --------------- A chaque frame qui passent, la fonction "animate" est activé ---------------
+    
       requestAnimationFrame( animate );
 
-      xPosition += 0.05;	
+      xPosition += 0.1;	
 
-      zRotation += 0.005;
+      yPosition += marchSpeed;
+      zRotation += marchRotation;
 
       cube.position.x = xPosition;
-      //cube.position.y = yPosition;
+      cube.position.y = yPosition;
       //cube.position.z = zPosition;
  	
       //cube.rotation.x = xRotation;
 	    //cube.rotation.y = yRotation;
 	    cube.rotation.z = -zRotation;
 
-      xScale = xScale-0.001
-      yScale = yScale-0.001
-      zScale = zScale-0.001
-      cube.scale.set(xScale,yScale,zScale)
+      // xScale = xScale-0.001
+      // yScale = yScale-0.001
+      // zScale = zScale-0.001
+      // cube.scale.set(xScale,yScale,zScale)
 
-      if(xScale < 0){
-        xPosition = 0
+      if(yPosition > 12.8){
+        marchSpeed = -0.020
+        marchRotation = 0.0065
+      }
+      if(yPosition < 10){
+        marchSpeed = 0.035
+        marchRotation = 0.008;
+      }
+
+      if(xPosition > 100){
+        xPosition = -100
         //yPosition = 0
         //zPosition = 0
 
-      // yRotation =  0; 
-      // xRotation =  0;	 
-        zRotation =  0;
-
-        xScale = 1
-        yScale = 1
-        zScale = 1
-        cube.scale.set(xScale,yScale,zScale)
+        //yRotation =  10; 
+        //xRotation =  0;	 
+        //zRotation =  0;
       }
 
       controls.update();
